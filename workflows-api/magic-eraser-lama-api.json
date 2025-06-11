@@ -1,0 +1,86 @@
+{
+  "27": {
+    "inputs": {
+      "image": [
+        "85",
+        0
+      ],
+      "mask": [
+        "29",
+        0
+      ]
+    },
+    "class_type": "LaMaInpainting",
+    "_meta": {
+      "title": "LaMaInpainting ♾️Mixlab"
+    }
+  },
+  "29": {
+    "inputs": {
+      "dilation": 10,
+      "mask": [
+        "46",
+        0
+      ]
+    },
+    "class_type": "ImpactDilateMask",
+    "_meta": {
+      "title": "Dilate Mask"
+    }
+  },
+  "44": {
+    "inputs": {
+      "mask": [
+        "99",
+        0
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "Convert Mask to Image"
+    }
+  },
+  "46": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "44",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "Convert Image to Mask"
+    }
+  },
+  "85": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  },
+  "99": {
+    "inputs": {
+      "mask": ""
+    },
+    "class_type": "ETN_LoadMaskBase64",
+    "_meta": {
+      "title": "Load Mask (Base64)"
+    }
+  },
+  "100": {
+    "inputs": {
+      "images": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "SaveImageWebsocket"
+    }
+  }
+}

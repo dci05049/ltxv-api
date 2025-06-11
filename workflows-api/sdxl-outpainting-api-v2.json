@@ -1,0 +1,360 @@
+{
+  "14": {
+    "inputs": {
+      "ckpt_name": "forrealxlV10_v10Fp16.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "16": {
+    "inputs": {
+      "text": [
+        "367",
+        0
+      ],
+      "clip": [
+        "14",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "17": {
+    "inputs": {
+      "text": "nude, nudity, nsfw, explicit, suggestive, revealing clothes, cleavage, underboob, sideboob, see-through, transparent clothing, bikini, lingerie, erotic, sexy, porn, adult content, lewd, sensual, provocative, bare shoulders, exposed midriff, exposed thighs, tight clothes, deformed, mutated, extra limbs, extra fingers, missing limbs, ugly, distorted face, creepy smile, uncanny, abnormal, disfigured, bad anatomy, asymmetrical, incorrect proportions, wrong hand, unnatural, low quality, worst quality, blurry, pixelated, out of focus, poorly drawn, bad lighting, unnatural skin, artifacts, overexposed, underexposed, bad composition, unnatural colors,gore, blood, injury, violence, weapon, gun, knife, corpse, mutilation, death, horror, creepy, disturbing, nightmare, abuse, torture, explosion, suicide, murder, crime, drugs, smoking, alcohol, gang, dark, scary, demon, monster\n\n",
+      "clip": [
+        "14",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (부정)"
+    }
+  },
+  "19": {
+    "inputs": {
+      "strength": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "positive": [
+        "16",
+        0
+      ],
+      "negative": [
+        "17",
+        0
+      ],
+      "control_net": [
+        "20",
+        0
+      ],
+      "image": [
+        "99",
+        0
+      ],
+      "vae": [
+        "14",
+        2
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "Apply ControlNet"
+    }
+  },
+  "20": {
+    "inputs": {
+      "type": "repaint",
+      "control_net": [
+        "21",
+        0
+      ]
+    },
+    "class_type": "SetUnionControlNetType",
+    "_meta": {
+      "title": "SetUnionControlNetType"
+    }
+  },
+  "21": {
+    "inputs": {
+      "control_net_name": "diffusion_pytorch_model_promax.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "Load ControlNet Model"
+    }
+  },
+  "24": {
+    "inputs": {
+      "seed": 780842081467013,
+      "steps": 15,
+      "cfg": 1.8,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "14",
+        0
+      ],
+      "positive": [
+        "19",
+        0
+      ],
+      "negative": [
+        "19",
+        1
+      ],
+      "latent_image": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "25": {
+    "inputs": {
+      "samples": [
+        "24",
+        0
+      ],
+      "vae": [
+        "14",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "27": {
+    "inputs": {
+      "grow_mask_by": 40,
+      "pixels": [
+        "99",
+        0
+      ],
+      "vae": [
+        "14",
+        2
+      ],
+      "mask": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "VAEEncodeForInpaint",
+    "_meta": {
+      "title": "VAE Encode (for Inpainting)"
+    }
+  },
+  "78": {
+    "inputs": {
+      "mask": [
+        "355",
+        1
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "InvertMask"
+    }
+  },
+  "99": {
+    "inputs": {
+      "mode": "Pass through",
+      "count": 1,
+      "images": [
+        "355",
+        0
+      ]
+    },
+    "class_type": "Preview Chooser",
+    "_meta": {
+      "title": "Preview Chooser"
+    }
+  },
+  "256": {
+    "inputs": {
+      "amount": 100,
+      "device": "auto",
+      "mask": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "MaskBlur+",
+    "_meta": {
+      "title": "🔧 Mask Blur"
+    }
+  },
+  "259": {
+    "inputs": {
+      "strength": 20,
+      "brightness": -30,
+      "contrast": 0,
+      "saturation": 0,
+      "red": 0,
+      "green": 0,
+      "blue": 0,
+      "mode": "RGB",
+      "image": [
+        "25",
+        0
+      ],
+      "mask": [
+        "256",
+        0
+      ]
+    },
+    "class_type": "LayerColor: AutoAdjustV2",
+    "_meta": {
+      "title": "LayerColor: AutoAdjust V2"
+    }
+  },
+  "319": {
+    "inputs": {
+      "text_input": "",
+      "task": "more_detailed_caption",
+      "fill_mask": true,
+      "keep_model_loaded": false,
+      "max_new_tokens": 1115,
+      "num_beams": 3,
+      "do_sample": true,
+      "output_mask_select": "",
+      "seed": 581133095170698,
+      "image": [
+        "361",
+        0
+      ],
+      "florence2_model": [
+        "320",
+        0
+      ]
+    },
+    "class_type": "Florence2Run",
+    "_meta": {
+      "title": "Florence2Run"
+    }
+  },
+  "320": {
+    "inputs": {
+      "model": "Florence-2-base",
+      "precision": "fp16",
+      "attention": "sdpa"
+    },
+    "class_type": "Florence2ModelLoader",
+    "_meta": {
+      "title": "Florence2ModelLoader"
+    }
+  },
+  "340": {
+    "inputs": {
+      "width": 2000,
+      "height": 2000,
+      "red": 0,
+      "green": 0,
+      "blue": 0
+    },
+    "class_type": "Image Blank",
+    "_meta": {
+      "title": "Image Blank"
+    }
+  },
+  "355": {
+    "inputs": {
+      "invert_mask": true,
+      "blend_mode": "normal",
+      "opacity": 100,
+      "x_percent": 50,
+      "y_percent": 50,
+      "mirror": "None",
+      "scale": 1,
+      "aspect_ratio": 1,
+      "rotate": 0,
+      "transform_method": "lanczos",
+      "anti_aliasing": 0,
+      "background_image": [
+        "340",
+        0
+      ],
+      "layer_image": [
+        "361",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: ImageBlendAdvance",
+    "_meta": {
+      "title": "LayerUtility: ImageBlendAdvance"
+    }
+  },
+  "360": {
+    "inputs": {
+      "images": [
+        "259",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "SaveImageWebsocket"
+    }
+  },
+  "361": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  },
+  "365": {
+    "inputs": {
+      "text": [
+        "319",
+        2
+      ]
+    },
+    "class_type": "ViewText",
+    "_meta": {
+      "title": "ViewText"
+    }
+  },
+  "366": {
+    "inputs": {
+      "text": "in a beautiful garden"
+    },
+    "class_type": "TextInput_",
+    "_meta": {
+      "title": "Text Input ♾️Mixlab"
+    }
+  },
+  "367": {
+    "inputs": {
+      "delimiter": ", ",
+      "clean_whitespace": "true",
+      "text_a": [
+        "365",
+        0
+      ],
+      "text_b": [
+        "366",
+        0
+      ]
+    },
+    "class_type": "Text Concatenate",
+    "_meta": {
+      "title": "Text Concatenate"
+    }
+  }
+}

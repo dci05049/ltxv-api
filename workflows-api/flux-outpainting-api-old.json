@@ -1,0 +1,188 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 632743727820796,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "39",
+        0
+      ],
+      "positive": [
+        "38",
+        0
+      ],
+      "negative": [
+        "38",
+        1
+      ],
+      "latent_image": [
+        "38",
+        2
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "32",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "32": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "34": {
+    "inputs": {
+      "clip_name1": "clip_l.safetensors",
+      "clip_name2": "t5xxl_fp8_e4m3fn.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "DualCLIPLoader"
+    }
+  },
+  "38": {
+    "inputs": {
+      "noise_mask": false,
+      "positive": [
+        "64",
+        0
+      ],
+      "negative": [
+        "65",
+        0
+      ],
+      "vae": [
+        "32",
+        0
+      ],
+      "pixels": [
+        "44",
+        0
+      ],
+      "mask": [
+        "44",
+        1
+      ]
+    },
+    "class_type": "InpaintModelConditioning",
+    "_meta": {
+      "title": "InpaintModelConditioning"
+    }
+  },
+  "39": {
+    "inputs": {
+      "model": [
+        "62",
+        0
+      ]
+    },
+    "class_type": "DifferentialDiffusion",
+    "_meta": {
+      "title": "Differential Diffusion"
+    }
+  },
+  "44": {
+    "inputs": {
+      "left": 200,
+      "top": 304,
+      "right": 200,
+      "bottom": 304,
+      "feathering": 24,
+      "image": [
+        "58",
+        0
+      ]
+    },
+    "class_type": "ImagePadForOutpaint",
+    "_meta": {
+      "title": "Pad Image for Outpainting"
+    }
+  },
+  "58": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  },
+  "60": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "SaveImageWebsocket"
+    }
+  },
+  "62": {
+    "inputs": {
+      "unet_name": "flux1-fill-dev-fp8.safetensors",
+      "weight_dtype": "fp8_e4m3fn_fast"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "확산 모델 로드"
+    }
+  },
+  "64": {
+    "inputs": {
+      "clip_l": "seamless continuation, consistent lighting, matching perspective, natural colors, plain background, no text\n",
+      "t5xxl": "Extend the image seamlessly with a consistent lighting environment and a matching perspective. Use natural colors and ensure the background remains plain and uncluttered. Avoid including any text or written elements in the extended area.\n",
+      "guidance": 30,
+      "clip": [
+        "34",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncodeFlux",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (긍정)"
+    }
+  },
+  "65": {
+    "inputs": {
+      "clip_l": "nude, nudity, nsfw, explicit, suggestive, revealing clothes, cleavage, underboob, sideboob, see-through, transparent clothing, bikini, lingerie, erotic, sexy, porn, adult content, lewd, sensual, provocative, bare shoulders, exposed midriff, exposed thighs, tight clothes, deformed, mutated, extra limbs, extra fingers, missing limbs, ugly, distorted face, creepy smile, uncanny, abnormal, disfigured, bad anatomy, asymmetrical, incorrect proportions, wrong hand, unnatural, low quality, worst quality, blurry, pixelated, out of focus, poorly drawn, bad lighting, unnatural skin, artifacts, overexposed, underexposed, bad composition, unnatural colors,gore, blood, injury, violence, weapon, gun, knife, corpse, mutilation, death, horror, creepy, disturbing, nightmare, abuse, torture, explosion, suicide, murder, crime, drugs, smoking, alcohol, gang, dark, scary, demon, monster, extra arms, extra legs, extra limbs, extra hands, extra fingers, multiple limbs, mutated limbs, deformed hands, deformed legs, duplicate arms, duplicate legs, disfigured, malformed limbs, fused limbs, broken anatomy, text, letters, captions, subtitles, font, logo, watermark, advertisement, promo, signs, typographic elements, writing, product label, text, letters, captions, subtitles, font, logo, watermark, advertisement, promo, signs, typographic elements, writing, product label",
+      "t5xxl": "",
+      "guidance": 30,
+      "clip": [
+        "34",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncodeFlux",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (부정)"
+    }
+  }
+}

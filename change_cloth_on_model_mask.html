@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload and Display</title>
+</head>
+<body>
+    <h1>Upload Images and Display Result</h1>
+    
+    <!-- Form for uploading files -->
+    <form id="upload-form">
+        <label for="mask-image">Mask Image (JPG/PNG):</label>
+        <input type="file" id="mask_image" name="mask_image" accept="image/jpeg, image/png" required><br><br>
+        
+        <label for="cloth_image">Cloth image (JPG/PNG):</label>
+        <input type="file" id="cloth_image" name="cloth_image" accept="image/jpeg, image/png" required><br><br>
+        
+        <label for="model_image">Model image (JPG/PNG):</label>
+        <input type="file" id="model_image" name="model_image" accept="image/jpeg, image/png" required><br><br>
+        
+        <button type="button" onclick="uploadImages()">Upload and Process</button>
+    </form>
+    
+    <!-- Container for displaying the result -->
+    <div id="result-container"></div>
+
+    <script>
+        function uploadImages() {
+            const form = document.getElementById('upload-form');
+            const formData = new FormData(form);
+
+            console.log("uplaidng image")
+
+            // POST request to the FastAPI endpoint
+            fetch('http://127.0.0.1:8000/swap-cloth-model/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log("error")
+                    throw new Error('Error processing images');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create an image element to display the processed image
+                console.log("sucess")
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(blob);
+                img.alt = "Processed Image";
+
+                console.log(blob)
+
+                // Clear previous result and display the new image
+                const resultContainer = document.getElementById('result-container');
+                resultContainer.innerHTML = '';
+                resultContainer.appendChild(img);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to process images. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

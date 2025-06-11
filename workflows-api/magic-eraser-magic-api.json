@@ -1,0 +1,361 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 25624519086586,
+      "steps": 24,
+      "cfg": 5,
+      "sampler_name": "dpmpp_2m_sde_gpu",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "11",
+        0
+      ],
+      "positive": [
+        "34",
+        0
+      ],
+      "negative": [
+        "34",
+        1
+      ],
+      "latent_image": [
+        "42",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "a clean, natural background, seamless texture, highly detailed, smooth lighting, photorealistic, harmonious environment",
+      "clip": [
+        "88",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (프롬프트)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "nude nsfw people person lowres text error cropped worst quality low quality jpeg artifacts ugly duplicate morbid mutilated out of frame extra fingers mutated hands poorly drawn hands poorly drawn face mutation deformed blurry dehydrated bad anatomy bad proportions extra limbs cloned face disfigured gross proportions malformed limbs missing arms missing legs extra arms extra legs fused fingers too many fingers long neck username watermark signature",
+      "clip": [
+        "88",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (부정)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "88",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE 디코드"
+    }
+  },
+  "11": {
+    "inputs": {
+      "model": [
+        "88",
+        0
+      ],
+      "patch": [
+        "12",
+        0
+      ],
+      "latent": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "INPAINT_ApplyFooocusInpaint",
+    "_meta": {
+      "title": "Apply Fooocus Inpaint"
+    }
+  },
+  "12": {
+    "inputs": {
+      "head": "fooocus_inpaint_head.pth",
+      "patch": "inpaint_v26.fooocus.patch"
+    },
+    "class_type": "INPAINT_LoadFooocusInpaint",
+    "_meta": {
+      "title": "Load Fooocus Inpaint"
+    }
+  },
+  "27": {
+    "inputs": {
+      "image": [
+        "85",
+        0
+      ],
+      "mask": [
+        "29",
+        0
+      ]
+    },
+    "class_type": "LaMaInpainting",
+    "_meta": {
+      "title": "LaMaInpainting ♾️Mixlab"
+    }
+  },
+  "29": {
+    "inputs": {
+      "dilation": 5,
+      "mask": [
+        "86",
+        0
+      ]
+    },
+    "class_type": "ImpactDilateMask",
+    "_meta": {
+      "title": "Dilate Mask"
+    }
+  },
+  "34": {
+    "inputs": {
+      "strength": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "control_net": [
+        "35",
+        0
+      ],
+      "image": [
+        "38",
+        0
+      ],
+      "vae": [
+        "88",
+        2
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "컨트롤넷 적용"
+    }
+  },
+  "35": {
+    "inputs": {
+      "control_net_name": "mistoLine_rank256.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "컨트롤넷 모델 로드"
+    }
+  },
+  "37": {
+    "inputs": {
+      "expand": 7,
+      "tapered_corners": true,
+      "mask": [
+        "86",
+        0
+      ]
+    },
+    "class_type": "GrowMask",
+    "_meta": {
+      "title": "마스크 확장"
+    }
+  },
+  "38": {
+    "inputs": {
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "destination": [
+        "39",
+        0
+      ],
+      "source": [
+        "39",
+        0
+      ],
+      "mask": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "ImageCompositeMasked",
+    "_meta": {
+      "title": "마스크된 이미지 합성"
+    }
+  },
+  "39": {
+    "inputs": {
+      "resolution": 1024,
+      "image": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "AnimeLineArtPreprocessor",
+    "_meta": {
+      "title": "Anime Lineart"
+    }
+  },
+  "41": {
+    "inputs": {
+      "pixels": [
+        "27",
+        0
+      ],
+      "vae": [
+        "88",
+        2
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE 인코드"
+    }
+  },
+  "42": {
+    "inputs": {
+      "samples": [
+        "41",
+        0
+      ],
+      "mask": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "SetLatentNoiseMask",
+    "_meta": {
+      "title": "잠재 데이터에 노이즈 마스크 설정"
+    }
+  },
+  "59": {
+    "inputs": {
+      "invert_mask": false,
+      "blend_mode": "normal",
+      "opacity": 100,
+      "background_image": [
+        "85",
+        0
+      ],
+      "layer_image": [
+        "8",
+        0
+      ],
+      "layer_mask": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: ImageBlend",
+    "_meta": {
+      "title": "LayerUtility: ImageBlend"
+    }
+  },
+  "73": {
+    "inputs": {},
+    "class_type": "Anything Everywhere",
+    "_meta": {
+      "title": "Anything Everywhere"
+    }
+  },
+  "74": {
+    "inputs": {},
+    "class_type": "Anything Everywhere",
+    "_meta": {
+      "title": "Anything Everywhere"
+    }
+  },
+  "75": {
+    "inputs": {},
+    "class_type": "Anything Everywhere",
+    "_meta": {
+      "title": "Anything Everywhere"
+    }
+  },
+  "78": {
+    "inputs": {
+      "grow_mask_by": 4,
+      "pixels": [
+        "27",
+        0
+      ],
+      "vae": [
+        "88",
+        2
+      ],
+      "mask": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "VAEEncodeForInpaint",
+    "_meta": {
+      "title": "VAE 인코드 (인페인팅용)"
+    }
+  },
+  "85": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  },
+  "86": {
+    "inputs": {
+      "mask": ""
+    },
+    "class_type": "ETN_LoadMaskBase64",
+    "_meta": {
+      "title": "Load Mask (Base64)"
+    }
+  },
+  "87": {
+    "inputs": {
+      "images": [
+        "59",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "이미지 웹소켓 전송"
+    }
+  },
+  "88": {
+    "inputs": {
+      "ckpt_name": "epicrealismXL_vxviLastfameRealism.safetensors",
+      "key_opt": "",
+      "mode": "Auto"
+    },
+    "class_type": "CheckpointLoaderSimpleShared //Inspire",
+    "_meta": {
+      "title": "Shared Checkpoint Loader (Inspire)"
+    }
+  }
+}

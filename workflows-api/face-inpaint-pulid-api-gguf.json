@@ -1,0 +1,484 @@
+{
+  "6": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "75",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "16": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSampler (선택)"
+    }
+  },
+  "17": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 0.6,
+      "model": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "기본 스케줄러"
+    }
+  },
+  "25": {
+    "inputs": {
+      "noise_seed": 18
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "무작위 노이즈"
+    }
+  },
+  "26": {
+    "inputs": {
+      "guidance": 4,
+      "conditioning": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "FLUX 가이드"
+    }
+  },
+  "31": {
+    "inputs": {
+      "unet_name": "flux1-dev-Q8_0.gguf"
+    },
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "Unet Loader (GGUF)"
+    }
+  },
+  "45": {
+    "inputs": {
+      "pulid_file": "pulid_flux_v0.9.1.safetensors"
+    },
+    "class_type": "PulidFluxModelLoader",
+    "_meta": {
+      "title": "Load PuLID Flux Model"
+    }
+  },
+  "47": {
+    "inputs": {
+      "model": [
+        "62",
+        0
+      ],
+      "conditioning": [
+        "26",
+        0
+      ]
+    },
+    "class_type": "BasicGuider",
+    "_meta": {
+      "title": "기본 가이드"
+    }
+  },
+  "48": {
+    "inputs": {
+      "noise": [
+        "25",
+        0
+      ],
+      "guider": [
+        "47",
+        0
+      ],
+      "sampler": [
+        "16",
+        0
+      ],
+      "sigmas": [
+        "17",
+        0
+      ],
+      "latent_image": [
+        "65",
+        0
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "고급 사용자 정의 샘플러"
+    }
+  },
+  "49": {
+    "inputs": {
+      "samples": [
+        "48",
+        0
+      ],
+      "vae": [
+        "74",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE 디코드"
+    }
+  },
+  "51": {
+    "inputs": {},
+    "class_type": "PulidFluxEvaClipLoader",
+    "_meta": {
+      "title": "Load Eva Clip (PuLID Flux)"
+    }
+  },
+  "53": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "PulidFluxInsightFaceLoader",
+    "_meta": {
+      "title": "Load InsightFace (PuLID Flux)"
+    }
+  },
+  "62": {
+    "inputs": {
+      "weight": 1,
+      "start_at": 0,
+      "end_at": 1,
+      "model": [
+        "31",
+        0
+      ],
+      "pulid_flux": [
+        "45",
+        0
+      ],
+      "eva_clip": [
+        "51",
+        0
+      ],
+      "face_analysis": [
+        "53",
+        0
+      ],
+      "image": [
+        "103",
+        0
+      ]
+    },
+    "class_type": "ApplyPulidFlux",
+    "_meta": {
+      "title": "Apply PuLID Flux"
+    }
+  },
+  "64": {
+    "inputs": {
+      "pixels": [
+        "69",
+        0
+      ],
+      "vae": [
+        "74",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE 인코드"
+    }
+  },
+  "65": {
+    "inputs": {
+      "samples": [
+        "64",
+        0
+      ],
+      "mask": [
+        "92",
+        0
+      ]
+    },
+    "class_type": "SetLatentNoiseMask",
+    "_meta": {
+      "title": "잠재 데이터에 노이즈 마스크 설정"
+    }
+  },
+  "69": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "interpolation": "lanczos",
+      "method": "keep proportion",
+      "condition": "always",
+      "multiple_of": 0,
+      "image": [
+        "89",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "73": {
+    "inputs": {
+      "seed": 432668214262014,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "81",
+        0
+      ],
+      "positive": [
+        "76",
+        0
+      ],
+      "negative": [
+        "76",
+        1
+      ],
+      "latent_image": [
+        "76",
+        2
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "74": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAE 로드"
+    }
+  },
+  "75": {
+    "inputs": {
+      "clip_name1": "clip_l.safetensors",
+      "clip_name2": "t5xxl_fp16.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "이중 CLIP 로드"
+    }
+  },
+  "76": {
+    "inputs": {
+      "noise_mask": false,
+      "positive": [
+        "78",
+        0
+      ],
+      "negative": [
+        "79",
+        0
+      ],
+      "vae": [
+        "74",
+        0
+      ],
+      "pixels": [
+        "101",
+        0
+      ],
+      "mask": [
+        "102",
+        0
+      ]
+    },
+    "class_type": "InpaintModelConditioning",
+    "_meta": {
+      "title": "인페인팅 모델 조건 설정"
+    }
+  },
+  "78": {
+    "inputs": {
+      "clip_l": "elegant mature Caucasian woman, sophisticated, sharp cheekbones, deep blue eyes, wavy platinum blonde hair, classy outfit, minimal makeup, high-resolution portrait, studio photography, 8K\n\n\n",
+      "t5xxl": "elegant mature Caucasian woman, sophisticated, sharp cheekbones, deep blue eyes, wavy platinum blonde hair, classy outfit, minimal makeup, high-resolution portrait, studio photography, 8K\n\n\n\n",
+      "guidance": 30,
+      "clip": [
+        "75",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncodeFlux",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (FLUX)"
+    }
+  },
+  "79": {
+    "inputs": {
+      "clip_l": "nude, nudity, nsfw, explicit, suggestive, revealing clothes, cleavage, underboob, sideboob, see-through, transparent clothing, bikini, lingerie, erotic, sexy, porn, adult content, lewd, sensual, provocative, bare shoulders, exposed midriff, exposed thighs, tight clothes, deformed, mutated, extra limbs, extra fingers, missing limbs, ugly, distorted face, creepy smile, uncanny, abnormal, disfigured, bad anatomy, asymmetrical, incorrect proportions, wrong hand, unnatural, low quality, worst quality, blurry, pixelated, out of focus, poorly drawn, bad lighting, unnatural skin, artifacts, overexposed, underexposed, bad composition, unnatural colors,gore, blood, injury, violence, weapon, gun, knife, corpse, mutilation, death, horror, creepy, disturbing, nightmare, abuse, torture, explosion, suicide, murder, crime, drugs, smoking, alcohol, gang, dark, scary, demon, monster\n",
+      "t5xxl": "nude, nudity, nsfw, explicit, suggestive, revealing clothes, cleavage, underboob, sideboob, see-through, transparent clothing, bikini, lingerie, erotic, sexy, porn, adult content, lewd, sensual, provocative, bare shoulders, exposed midriff, exposed thighs, tight clothes, deformed, mutated, extra limbs, extra fingers, missing limbs, ugly, distorted face, creepy smile, uncanny, abnormal, disfigured, bad anatomy, asymmetrical, incorrect proportions, wrong hand, unnatural, low quality, worst quality, blurry, pixelated, out of focus, poorly drawn, bad lighting, unnatural skin, artifacts, overexposed, underexposed, bad composition, unnatural colors,gore, blood, injury, violence, weapon, gun, knife, corpse, mutilation, death, horror, creepy, disturbing, nightmare, abuse, torture, explosion, suicide, murder, crime, drugs, smoking, alcohol, gang, dark, scary, demon, monster\n",
+      "guidance": 30,
+      "clip": [
+        "75",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncodeFlux",
+    "_meta": {
+      "title": "CLIP 텍스트 인코딩 (부정)"
+    }
+  },
+  "81": {
+    "inputs": {
+      "unet_name": "flux1-fill-dev-Q6_K.gguf",
+      "dequant_dtype": "default",
+      "patch_dtype": "default",
+      "patch_on_device": false
+    },
+    "class_type": "UnetLoaderGGUFAdvanced",
+    "_meta": {
+      "title": "Unet Loader (GGUF/Advanced)"
+    }
+  },
+  "83": {
+    "inputs": {
+      "threshold": 0.5,
+      "dilation": 10,
+      "crop_factor": 3,
+      "drop_size": 10,
+      "labels": "all",
+      "bbox_detector": [
+        "84",
+        0
+      ],
+      "image": [
+        "101",
+        0
+      ]
+    },
+    "class_type": "BboxDetectorSEGS",
+    "_meta": {
+      "title": "BBOX Detector (SEGS)"
+    }
+  },
+  "84": {
+    "inputs": {
+      "model_name": "bbox/face_yolov8m.pt"
+    },
+    "class_type": "UltralyticsDetectorProvider",
+    "_meta": {
+      "title": "UltralyticsDetectorProvider"
+    }
+  },
+  "89": {
+    "inputs": {
+      "samples": [
+        "73",
+        0
+      ],
+      "vae": [
+        "74",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE 디코드"
+    }
+  },
+  "90": {
+    "inputs": {
+      "segs": [
+        "83",
+        0
+      ]
+    },
+    "class_type": "ImpactSEGSToMaskBatch",
+    "_meta": {
+      "title": "SEGS to Mask Batch"
+    }
+  },
+  "92": {
+    "inputs": {
+      "idx": 0,
+      "masks": [
+        "90",
+        0
+      ]
+    },
+    "class_type": "SelectNthMask //Inspire",
+    "_meta": {
+      "title": "Select Nth Mask (Inspire)"
+    }
+  },
+  "96": {
+    "inputs": {
+      "CLIP": [
+        "75",
+        0
+      ],
+      "VAE": [
+        "74",
+        0
+      ]
+    },
+    "class_type": "Anything Everywhere3",
+    "_meta": {
+      "title": "Anything Everywhere3"
+    }
+  },
+  "97": {
+    "inputs": {
+      "images": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "이미지 웹소켓 전송"
+    }
+  },
+  "101": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  },
+  "102": {
+    "inputs": {
+      "mask": ""
+    },
+    "class_type": "ETN_LoadMaskBase64",
+    "_meta": {
+      "title": "Load Mask (Base64)"
+    }
+  },
+  "103": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  }
+}

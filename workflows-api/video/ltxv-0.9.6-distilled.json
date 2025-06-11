@@ -1,0 +1,426 @@
+{
+  "947": {
+    "inputs": {
+      "text": [
+        "1193",
+        0
+      ],
+      "clip": [
+        "954",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "954": {
+    "inputs": {
+      "clip_name": "t5xxl_fp16.safetensors",
+      "type": "ltxv",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load CLIP"
+    }
+  },
+  "955": {
+    "inputs": {
+      "ckpt_name": "ltxv-2b-0.9.6-distilled-04-25.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "958": {
+    "inputs": {
+      "img_compression": 40,
+      "image": [
+        "1115",
+        0
+      ]
+    },
+    "class_type": "LTXVPreprocess",
+    "_meta": {
+      "title": "LTXVPreprocess"
+    }
+  },
+  "977": {
+    "inputs": {
+      "cfg": 1,
+      "model": [
+        "955",
+        0
+      ],
+      "positive": [
+        "989",
+        0
+      ],
+      "negative": [
+        "989",
+        1
+      ]
+    },
+    "class_type": "CFGGuider",
+    "_meta": {
+      "title": "CFGGuider"
+    }
+  },
+  "981": {
+    "inputs": {
+      "frame_rate": [
+        "1038",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": "test/aaaa",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 18,
+      "save_metadata": false,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "996",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "989": {
+    "inputs": {
+      "frame_rate": [
+        "1038",
+        0
+      ],
+      "positive": [
+        "1094",
+        0
+      ],
+      "negative": [
+        "1094",
+        1
+      ]
+    },
+    "class_type": "LTXVConditioning",
+    "_meta": {
+      "title": "LTXVConditioning"
+    }
+  },
+  "990": {
+    "inputs": {
+      "noise": [
+        "995",
+        0
+      ],
+      "guider": [
+        "977",
+        0
+      ],
+      "sampler": [
+        "991",
+        0
+      ],
+      "sigmas": [
+        "1031",
+        0
+      ],
+      "latent_image": [
+        "1094",
+        2
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "991": {
+    "inputs": {
+      "sampler_name": "euler_ancestral"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "995": {
+    "inputs": {
+      "noise_seed": 875
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "996": {
+    "inputs": {
+      "samples": [
+        "1096",
+        2
+      ],
+      "vae": [
+        "955",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "1031": {
+    "inputs": {
+      "float_list": [
+        "1102",
+        0
+      ]
+    },
+    "class_type": "FloatToSigmas",
+    "_meta": {
+      "title": "Float To Sigmas"
+    }
+  },
+  "1038": {
+    "inputs": {
+      "value": 24.000000000000007
+    },
+    "class_type": "FloatConstant",
+    "_meta": {
+      "title": "Float Constant"
+    }
+  },
+  "1048": {
+    "inputs": {
+      "value": 121
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "Num.Frames"
+    }
+  },
+  "1094": {
+    "inputs": {
+      "frame_idx": 0,
+      "strength": [
+        "1116",
+        0
+      ],
+      "positive": [
+        "1182",
+        0
+      ],
+      "negative": [
+        "947",
+        0
+      ],
+      "vae": [
+        "955",
+        2
+      ],
+      "latent": [
+        "1095",
+        0
+      ],
+      "image": [
+        "1099",
+        0
+      ]
+    },
+    "class_type": "LTXVAddGuide",
+    "_meta": {
+      "title": "LTXVAddGuide"
+    }
+  },
+  "1095": {
+    "inputs": {
+      "width": [
+        "1101",
+        0
+      ],
+      "height": [
+        "1100",
+        0
+      ],
+      "length": [
+        "1048",
+        0
+      ],
+      "batch_size": 1
+    },
+    "class_type": "EmptyLTXVLatentVideo",
+    "_meta": {
+      "title": "EmptyLTXVLatentVideo"
+    }
+  },
+  "1096": {
+    "inputs": {
+      "positive": [
+        "989",
+        0
+      ],
+      "negative": [
+        "989",
+        1
+      ],
+      "latent": [
+        "990",
+        1
+      ]
+    },
+    "class_type": "LTXVCropGuides",
+    "_meta": {
+      "title": "LTXVCropGuides"
+    }
+  },
+  "1099": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "upscale_method": "bicubic",
+      "keep_proportion": false,
+      "divisible_by": 2,
+      "crop": 0,
+      "image": [
+        "958",
+        0
+      ]
+    },
+    "class_type": "ImageResizeKJ",
+    "_meta": {
+      "title": "Resize Image (deprecated)"
+    }
+  },
+  "1100": {
+    "inputs": {
+      "value": 1011
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "Height"
+    }
+  },
+  "1101": {
+    "inputs": {
+      "value": 1216
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "Width"
+    }
+  },
+  "1102": {
+    "inputs": {
+      "string": "1.0000, 0.9937, 0.9875, 0.9812, 0.9750, 0.9094, 0.7250, 0.4219, 0.0"
+    },
+    "class_type": "StringToFloatList",
+    "_meta": {
+      "title": "String to Float List"
+    }
+  },
+  "1104": {
+    "inputs": {
+      "string": "0.997, 0.9937, 0.9875, 0.9812, 0.9750, 0.9094, 0.7250, 0.4219, 0.0"
+    },
+    "class_type": "StringToFloatList",
+    "_meta": {
+      "title": "String to Float List"
+    }
+  },
+  "1115": {
+    "inputs": {
+      "radius_x": 1,
+      "radius_y": 1,
+      "images": [
+        "1207",
+        0
+      ]
+    },
+    "class_type": "BlurImageFast",
+    "_meta": {
+      "title": "Blur Image (Fast)"
+    }
+  },
+  "1116": {
+    "inputs": {
+      "value": 0.6500000000000001
+    },
+    "class_type": "FloatConstant",
+    "_meta": {
+      "title": "Float Constant"
+    }
+  },
+  "1120": {
+    "inputs": {
+      "images": [
+        "958",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "1182": {
+    "inputs": {
+      "text": "this isthe prompt",
+      "clip": [
+        "954",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "1193": {
+    "inputs": {
+      "text": "low quality, worst quality, deformed, distorted, disfigured, motion smear, motion artifacts, fused fingers, bad anatomy, weird hand, ugly"
+    },
+    "class_type": "Text Multiline",
+    "_meta": {
+      "title": "Negative Prompt"
+    }
+  },
+  "1194": {
+    "inputs": {
+      "image": "360_F_132366202_h29Ryf57rEoh0GRLQQUHzNrSW3vWBEyj-ezgif.com-webp-to-jpg-converter.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Input Image"
+    }
+  },
+  "1206": {
+    "inputs": {
+      "images": [
+        "996",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "SaveImageWebsocket"
+    }
+  },
+  "1207": {
+    "inputs": {
+      "base64_data": "",
+      "image_output": "Preview",
+      "save_prefix": "ComfyUI"
+    },
+    "class_type": "easy loadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  }
+}

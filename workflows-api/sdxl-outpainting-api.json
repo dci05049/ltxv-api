@@ -1,0 +1,501 @@
+{
+  "14": {
+    "inputs": {
+      "ckpt_name": "forrealxlV10_v10.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "16": {
+    "inputs": {
+      "text": [
+        "319",
+        2
+      ],
+      "clip": [
+        "14",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "17": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "14",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "19": {
+    "inputs": {
+      "strength": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "positive": [
+        "16",
+        0
+      ],
+      "negative": [
+        "17",
+        0
+      ],
+      "control_net": [
+        "20",
+        0
+      ],
+      "image": [
+        "99",
+        0
+      ],
+      "vae": [
+        "14",
+        2
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "Apply ControlNet"
+    }
+  },
+  "20": {
+    "inputs": {
+      "type": "repaint",
+      "control_net": [
+        "21",
+        0
+      ]
+    },
+    "class_type": "SetUnionControlNetType",
+    "_meta": {
+      "title": "SetUnionControlNetType"
+    }
+  },
+  "21": {
+    "inputs": {
+      "control_net_name": "diffusion_pytorch_model_promax.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "Load ControlNet Model"
+    }
+  },
+  "24": {
+    "inputs": {
+      "seed": 386537670118533,
+      "steps": 15,
+      "cfg": 1.8,
+      "sampler_name": "ddpm",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "14",
+        0
+      ],
+      "positive": [
+        "19",
+        0
+      ],
+      "negative": [
+        "19",
+        1
+      ],
+      "latent_image": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "25": {
+    "inputs": {
+      "samples": [
+        "24",
+        0
+      ],
+      "vae": [
+        "14",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "27": {
+    "inputs": {
+      "grow_mask_by": 40,
+      "pixels": [
+        "99",
+        0
+      ],
+      "vae": [
+        "14",
+        2
+      ],
+      "mask": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "VAEEncodeForInpaint",
+    "_meta": {
+      "title": "VAE Encode (for Inpainting)"
+    }
+  },
+  "78": {
+    "inputs": {
+      "mask": [
+        "355",
+        1
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "InvertMask"
+    }
+  },
+  "99": {
+    "inputs": {
+      "mode": "Pass through",
+      "count": 1,
+      "images": [
+        "355",
+        0
+      ]
+    },
+    "class_type": "Preview Chooser",
+    "_meta": {
+      "title": "Preview Chooser"
+    }
+  },
+  "218": {
+    "inputs": {
+      "invert_mask": true,
+      "blend_mode": "normal",
+      "opacity": 100,
+      "background_image": [
+        "308",
+        0
+      ],
+      "layer_image": [
+        "99",
+        0
+      ],
+      "layer_mask": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: ImageBlend",
+    "_meta": {
+      "title": "LayerUtility: ImageBlend"
+    }
+  },
+  "224": {
+    "inputs": {
+      "expand": 50,
+      "tapered_corners": true,
+      "mask": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "GrowMask",
+    "_meta": {
+      "title": "GrowMask"
+    }
+  },
+  "225": {
+    "inputs": {
+      "masks_a": [
+        "224",
+        0
+      ],
+      "masks_b": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "Masks Subtract",
+    "_meta": {
+      "title": "Masks Subtract"
+    }
+  },
+  "256": {
+    "inputs": {
+      "amount": 100,
+      "device": "auto",
+      "mask": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "MaskBlur+",
+    "_meta": {
+      "title": "🔧 Mask Blur"
+    }
+  },
+  "259": {
+    "inputs": {
+      "strength": 20,
+      "brightness": -30,
+      "contrast": 0,
+      "saturation": 0,
+      "red": 0,
+      "green": 0,
+      "blue": 0,
+      "mode": "RGB",
+      "image": [
+        "25",
+        0
+      ],
+      "mask": [
+        "256",
+        0
+      ]
+    },
+    "class_type": "LayerColor: AutoAdjustV2",
+    "_meta": {
+      "title": "LayerColor: AutoAdjust V2"
+    }
+  },
+  "260": {
+    "inputs": {
+      "Input": 1,
+      "image1": [
+        "25",
+        0
+      ],
+      "image2": [
+        "259",
+        0
+      ]
+    },
+    "class_type": "CR Image Input Switch",
+    "_meta": {
+      "title": "🔀 CR Image Input Switch"
+    }
+  },
+  "298": {
+    "inputs": {
+      "blend_percentage": 0.5,
+      "image_a": [
+        "218",
+        0
+      ],
+      "image_b": [
+        "309",
+        0
+      ],
+      "mask": [
+        "299",
+        0
+      ]
+    },
+    "class_type": "Image Blend by Mask",
+    "_meta": {
+      "title": "Image Blend by Mask"
+    }
+  },
+  "299": {
+    "inputs": {
+      "mask": [
+        "225",
+        0
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "Convert Mask to Image"
+    }
+  },
+  "305": {
+    "inputs": {
+      "blend_percentage": 0.5,
+      "image_a": [
+        "298",
+        0
+      ],
+      "image_b": [
+        "309",
+        0
+      ],
+      "mask": [
+        "299",
+        0
+      ]
+    },
+    "class_type": "Image Blend by Mask",
+    "_meta": {
+      "title": "Image Blend by Mask"
+    }
+  },
+  "308": {
+    "inputs": {
+      "value": [
+        "260",
+        0
+      ]
+    },
+    "class_type": "ReroutePrimitive|pysssss",
+    "_meta": {
+      "title": "Reroute Primitive 🐍"
+    }
+  },
+  "309": {
+    "inputs": {
+      "value": [
+        "308",
+        0
+      ]
+    },
+    "class_type": "ReroutePrimitive|pysssss",
+    "_meta": {
+      "title": "Reroute Primitive 🐍"
+    }
+  },
+  "319": {
+    "inputs": {
+      "text_input": "",
+      "task": "more_detailed_caption",
+      "fill_mask": true,
+      "keep_model_loaded": false,
+      "max_new_tokens": 1115,
+      "num_beams": 3,
+      "do_sample": true,
+      "output_mask_select": "",
+      "seed": 999174987978982,
+      "image": [
+        "361",
+        0
+      ],
+      "florence2_model": [
+        "320",
+        0
+      ]
+    },
+    "class_type": "Florence2Run",
+    "_meta": {
+      "title": "Florence2Run"
+    }
+  },
+  "320": {
+    "inputs": {
+      "model": "Florence-2-base",
+      "precision": "fp16",
+      "attention": "sdpa"
+    },
+    "class_type": "Florence2ModelLoader",
+    "_meta": {
+      "title": "Florence2ModelLoader"
+    }
+  },
+  "321": {
+    "inputs": {
+      "text": [
+        "319",
+        2
+      ],
+      "text2": "The image is a digital illustration of a luxurious room with a large archway in the center. The archway is made of white marble and is surrounded by pink cherry blossom flowers. The flowers are in full bloom and are arranged in a way that creates a beautiful and elegant atmosphere. The walls are painted in a soft pink color and the floor is covered in a light pink carpet. The overall mood of the image is romantic and dreamy. The text on the image reads \"Jinjiang - The magical world\" in a cursive font."
+    },
+    "class_type": "ShowText|pysssss",
+    "_meta": {
+      "title": "✴️ U-NAI Get Text"
+    }
+  },
+  "324": {
+    "inputs": {
+      "string": "a portrait of a young Russian blond woman standing in a street in Halloween night very little turn her head and looking at camera. She has a bold and artistic Halloween makeup look. creating a cinematic, spooky but slightly playful Halloween-themed vibe."
+    },
+    "class_type": "String Literal",
+    "_meta": {
+      "title": "String Literal"
+    }
+  },
+  "340": {
+    "inputs": {
+      "width": 2000,
+      "height": 2000,
+      "red": 0,
+      "green": 0,
+      "blue": 0
+    },
+    "class_type": "Image Blank",
+    "_meta": {
+      "title": "Image Blank"
+    }
+  },
+  "343": {
+    "inputs": {
+      "image": "f6a5b6e9-8550-4116-9a99-5a948a7eab9e.jpeg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "355": {
+    "inputs": {
+      "invert_mask": true,
+      "blend_mode": "normal",
+      "opacity": 100,
+      "x_percent": 50,
+      "y_percent": 50,
+      "mirror": "None",
+      "scale": 1,
+      "aspect_ratio": 1,
+      "rotate": 0,
+      "transform_method": "lanczos",
+      "anti_aliasing": 0,
+      "background_image": [
+        "340",
+        0
+      ],
+      "layer_image": [
+        "361",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: ImageBlendAdvance",
+    "_meta": {
+      "title": "LayerUtility: ImageBlendAdvance"
+    }
+  },
+  "360": {
+    "inputs": {
+      "images": [
+        "259",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "SaveImageWebsocket"
+    }
+  },
+  "361": {
+    "inputs": {
+      "image": ""
+    },
+    "class_type": "ETN_LoadImageBase64",
+    "_meta": {
+      "title": "Load Image (Base64)"
+    }
+  }
+}
