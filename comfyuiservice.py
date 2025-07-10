@@ -201,6 +201,21 @@ def swap_cloth_model_iamge_json(model_image_base_64, cloth_image_base_64, mask_i
         return prompt_json
     
 # swap cloth on model image with mask
+def multi_photos_json(prompt):
+    POSITIVEPROMPTID = "270"
+
+    file_path = "data.json"
+    workflow_folder = "workflows-api"
+    file_name = "test-multi.json"
+    # Construct the full path to the JSON file
+    file_path = os.path.join(workflow_folder, file_name)
+    # Open the JSON file and load its content into a variable
+    with open(file_path, "r") as file:
+        prompt_json = json.load(file)
+        prompt_json[POSITIVEPROMPTID]["inputs"]["text"] = prompt
+        return prompt_json
+
+# swap cloth on model image with mask
 def swap_cloth_model_iamge_json(model_image_base_64, cloth_image_base_64, mask_image_base_64):
     CLOTHIMAGEID = "410"
     MODELIMAGEID = "412"
@@ -696,6 +711,59 @@ def get_face_inpainting(image_base64, mask_image_base64, prompt, negative_prompt
 def get_ltxv_video(image_base64, prompt):
     wrap_websocket_call(ltxv_distilled_json(image_base64, prompt))
     video_path = r"C:\Comfyui_V4\ComfyUI_windows_portable_nvidia\ComfyUI_windows_portable\ComfyUI\output\ltxv-video"
+        
+    # Find the most recent video file in the directory
+    video_files = [f for f in os.listdir(video_path) if f.endswith(('.mp4', '.avi', '.mov'))]
+    if not video_files:
+        raise Exception(f"No video files found in {video_path}")
+        
+    # Sort by creation time, newest first
+    video_files.sort(key=lambda x: os.path.getmtime(os.path.join(video_path, x)), reverse=True)
+    latest_video = os.path.join(video_path, video_files[0])
+
+    base_filename = os.path.splitext(os.path.basename(latest_video))[0]
+
+    # Read the video file and encode it to base64
+    with open(latest_video, "rb") as video_file:
+        video_data = video_file.read()
+        encoded_video = base64.b64encode(video_data).decode('utf-8')
+
+    # Try to find and delete a PNG with the same prefix
+    try:
+        matching_png = next(
+            (f for f in os.listdir(video_path) if f.startswith(base_filename) and f.endswith(".png")),
+            None
+        )
+        if matching_png:
+            png_path = os.path.join(video_path, matching_png)
+            os.remove(png_path)
+            print(f"Deleted PNG file: {png_path}")
+        else:
+            print("no matching png")
+            print(base_filename)
+    except Exception as e:
+        print(f"Failed to delete PNG file: {e}")
+    
+    # Now delete the file
+    try:
+        os.remove(latest_video)
+        print(f"Deleted video file: {latest_video}")
+    except Exception as e:
+        print(f"Failed to delete video file: {e}")
+    
+    # Return the video with proper data URL format
+    return {
+        "video": f"data:video/mp4;base64,{encoded_video}",
+        "metadata": {
+            "fps": 30,
+            "frames": 150,
+            "duration": 5.0
+        }
+    }
+
+
+def get_multi_photo(prompt):
+    wrap_websocket_call(multi_photos_json(prompt))
         
     # Find the most recent video file in the directory
     video_files = [f for f in os.listdir(video_path) if f.endswith(('.mp4', '.avi', '.mov'))]

@@ -302,6 +302,14 @@ async def swap_face_single(data: FaceRequestV2):
     result = {"image": result_image}
     return result
 
+@app.post("/multi-realistic-photos/")
+async def multi_images(data: FaceRequestV2):
+    # Load images into memory
+    result_image = comfyuiservice.get_image_swap_face_single(reference_image_base64=data.image1, prompt=data.prompt, negative_prompt=data.negative_prompt, width=data.width, height=data.height)
+    result_image = "data:image/png;base64," + base64.b64encode(result_image).decode("utf-8")
+    result = {"image": result_image}
+    return result
+
 @app.post("/swap-face-multiple/")
 async def swap_face_multiple(data: FaceRequestV2):
     # Load images into memory
