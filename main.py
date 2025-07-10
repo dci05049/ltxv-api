@@ -354,6 +354,26 @@ async def face_inpainting(data: FaceInpainting):
     result = {"image": result_image}
     return result
 
+# 요청 모델 정의
+class MultiPhoto(BaseModel):
+    prompt: str
+
+@app.post("/multi-photo/")
+async def multi_photo(data: MultiPhoto):
+    # Load images into memory
+    result_images = comfyuiservice.get_multi_photo(prompt=data.prompt)
+    
+    # Convert each image bytes to base64
+    base64_images = []
+    for i, image_bytes in enumerate(result_images):
+        base64_string = base64.b64encode(image_bytes).decode("utf-8")
+        # You can include the data URL prefix or not, depending on your frontend needs
+        base64_images.append(base64_string)
+    
+    # Return array of base64 images
+    result = {"images": base64_images}
+    return result
+
 @app.get("/hello")
 def read_hello():
     return {"message": "Hello World!"}

@@ -154,11 +154,6 @@
     
     <div class="container">
         <div class="input-section">
-            <label for="input-image">Upload Image:</label>
-            <input type="file" id="input-image" accept="image/jpeg, image/png, image/gif">
-            
-            <div class="image-preview-container" id="image-preview-container"></div>
-            
             <label for="prompt">Enter Your Prompt:</label>
             <textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
         </div>
@@ -174,52 +169,6 @@
     </div>
 
     <script>
-        let uploadedImage = null;
-        
-        // Set up file input change listener
-        document.getElementById('input-image').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const previewContainer = document.getElementById('image-preview-container');
-            previewContainer.innerHTML = ''; // Clear previous preview
-            
-            if (file && file.type.match('image.*')) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    // Create preview item
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'image-preview-item';
-                    
-                    // Create preview image
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'preview-image';
-                    img.style.display = 'block';
-                    
-                    // Create remove button
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-img';
-                    removeBtn.innerHTML = '×';
-                    removeBtn.onclick = function() {
-                        // Remove image and UI
-                        uploadedImage = null;
-                        previewContainer.removeChild(previewItem);
-                        document.getElementById('input-image').value = '';
-                    };
-                    
-                    // Add to container
-                    previewItem.appendChild(img);
-                    previewItem.appendChild(removeBtn);
-                    previewContainer.appendChild(previewItem);
-                    
-                    // Store uploaded image
-                    uploadedImage = file;
-                };
-                
-                reader.readAsDataURL(file);
-            }
-        });
-        
         function sendToAPI() {
             const resultContainer = document.getElementById('result-container');
             resultContainer.innerHTML = '';
@@ -228,41 +177,57 @@
             const loading = document.getElementById('loading');
             loading.style.display = 'block';
             
-            // Check if image is uploaded
-            if (!uploadedImage) {
-                alert('Please upload an image');
-                loading.style.display = 'none';
-                return;
-            }
-            
             // Get prompt text
             const promptText = document.getElementById('prompt').value.trim();
             
-            // Read image as base64
-            const reader = new FileReader();
-            reader.readAsDataURL(uploadedImage);
-            reader.onload = function() {
-                const base64String = reader.result.split(',')[1]; // Remove data URL prefix
-                
-                // Create payload for LTXVRequest
-                const payload = {
-                    "image1": base64String,
-                    "prompt": promptText
-                };
-                
-                console.log("Sending payload with both image and prompt");
-                
-                // Send JSON to FastAPI
-                fetch('http://127.0.0.1:8000/ltxv/', {
+            if (!promptText) {
+                document.getElementById('loading').style.display = 'none';
+                resultContainer.innerHTML = '<p class="status">Please enter a prompt</p>';
+                return;
+            }
+            
+            // Create payload with only prompt
+            const payload = {
+                "prompt": promptText
+            };
+            
+            console.log("Sending payload with prompt:", payload);
+            
+            // Try different URL formats for localhost
+            const urls = [
+                'http://localhost:8000/multi-photo/',
+                'http://127.0.0.1:8000/multi-photo/',
+                'http://0.0.0.0:8000/multi-photo/'
+            ];
+            
+            // Try the first URL (localhost)
+            fetch(urls[0], {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(handleResponse)
+            .catch(error => {
+                console.log("First URL failed, trying 127.0.0.1...", error);
+                // Try the second URL (127.0.0.1)
+                return fetch(urls[1], {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(payload)
-                })
-                .then(handleResponse)
-                .catch(handleError);
-            };
+                });
+            })
+            .then(response => {
+                if (response) {
+                    return handleResponse(response);
+                }
+            })
+            .catch(handleError);
         }
         
         function handleResponse(response) {
@@ -279,14 +244,19 @@
                     // Hide loading indicator
                     document.getElementById('loading').style.display = 'none';
                     
-                    // Check if the response contains a video
-                    if (data.video) {
-                        displayBase64Video(data.video, data.metadata);
-                    }
-                    // Check if the response contains an image
-                    else if (data.image) {
+                    console.log("Received JSON response:", data);
+                    
+                    // Check if the response contains images (array)
+                    if (data.images && Array.isArray(data.images)) {
+                        displayMultipleImages(data.images);
+                    } else if (data.image) {
+                        // Handle single image for backward compatibility
                         displayBase64Image(data.image);
+                    } else if (data.video) {
+                        // Handle video response if your API returns video
+                        displayBase64Video(data.video, data.metadata);
                     } else {
+                        // Display the JSON response
                         displayJson(data);
                     }
                 });
@@ -301,27 +271,146 @@
         }
         
         function handleError(error) {
+            console.error('Error details:', error);
+            document.getElementById('loading').style.display = 'none';
+            
+            let errorMessage = 'An error occurred';
+            if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            // Provide specific guidance for common errors
+            if (error.message.includes('ERR_INVALID_URL')) {
+                errorMessage = 'Invalid URL error. Make sure your FastAPI server is running on the correct port.';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Cannot connect to server. Please check if your FastAPI server is running on http://localhost:8000';
+            } else if (error.message.includes('CORS')) {
+                errorMessage = 'CORS error. Make sure your FastAPI server allows requests from this origin.';
+            }
+            
+            document.getElementById('result-container').innerHTML = `
+                <div style="background-color: #fee; padding: 15px; border-radius: 5px; border: 1px solid #fcc;">
+                    <strong>Error:</strong> ${errorMessage}
+                    <br><br>
+                    <strong>Troubleshooting:</strong>
+                    <ul style="text-align: left; margin: 10px 0;">
+                        <li>Make sure your FastAPI server is running</li>
+                        <li>Check if it's accessible at http://localhost:8000</li>
+                        <li>Verify the endpoint is /multi-photo/</li>
+                        <li>Check browser console for detailed error messages</li>
+                    </ul>
+                </div>
+            `;
+        }
+        
+        function handleError(error) {
             console.error('Error:', error);
             document.getElementById('loading').style.display = 'none';
             document.getElementById('result-container').innerHTML = `<p class="status">Error: ${error.message}</p>`;
         }
         
-        function displayBase64Image(dataUrl) {
+        function displayMultipleImages(base64Images) {
             const resultContainer = document.getElementById('result-container');
+            resultContainer.innerHTML = '';
             
-            // Create image element
+            // Create a title
+            const title = document.createElement('h3');
+            title.textContent = `Generated ${base64Images.length} image(s)`;
+            title.style.color = '#333';
+            title.style.marginBottom = '20px';
+            resultContainer.appendChild(title);
+            
+            // Create container for images
+            const imagesContainer = document.createElement('div');
+            imagesContainer.style.display = 'grid';
+            imagesContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+            imagesContainer.style.gap = '20px';
+            imagesContainer.style.marginBottom = '20px';
+            
+            // Create download all button
+            const downloadAllBtn = document.createElement('button');
+            downloadAllBtn.textContent = 'Download All Images';
+            downloadAllBtn.className = 'download-btn';
+            downloadAllBtn.style.width = 'auto';
+            downloadAllBtn.style.display = 'inline-block';
+            downloadAllBtn.style.marginBottom = '20px';
+            downloadAllBtn.onclick = () => downloadAllImages(base64Images);
+            
+            resultContainer.appendChild(downloadAllBtn);
+            
+            // Process each image
+            base64Images.forEach((base64String, index) => {
+                // Create data URL
+                const dataUrl = `data:image/png;base64,${base64String}`;
+                
+                // Create image container
+                const imageContainer = document.createElement('div');
+                imageContainer.style.textAlign = 'center';
+                imageContainer.style.padding = '10px';
+                imageContainer.style.border = '1px solid #ddd';
+                imageContainer.style.borderRadius = '8px';
+                imageContainer.style.backgroundColor = '#f9f9f9';
+                
+                // Create image element
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.alt = `Generated Image ${index + 1}`;
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                img.style.borderRadius = '4px';
+                
+                // Create individual download button
+                const downloadBtn = document.createElement('a');
+                downloadBtn.href = dataUrl;
+                downloadBtn.download = `generated_image_${index + 1}.png`;
+                downloadBtn.className = 'download-btn';
+                downloadBtn.textContent = `Download Image ${index + 1}`;
+                downloadBtn.style.display = 'inline-block';
+                downloadBtn.style.marginTop = '10px';
+                downloadBtn.style.fontSize = '14px';
+                downloadBtn.style.padding = '8px 16px';
+                
+                // Add to container
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(document.createElement('br'));
+                imageContainer.appendChild(downloadBtn);
+                imagesContainer.appendChild(imageContainer);
+            });
+            
+            resultContainer.appendChild(imagesContainer);
+        }
+        
+        function downloadAllImages(base64Images) {
+            base64Images.forEach((base64String, index) => {
+                const dataUrl = `data:image/png;base64,${base64String}`;
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `generated_image_${index + 1}.png`;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+        
+        function displayBase64Image(base64String) {
+            const resultContainer = document.getElementById('result-container');
+
+            // Create full data URL (assume PNG, but you can adjust based on your API)
+            const dataUrl = `data:image/png;base64,${base64String}`;
+
             const img = document.createElement('img');
             img.src = dataUrl;
-            img.alt = "Result Image";
-            
-            // Create download button
+            img.alt = "Generated Image";
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+
             const downloadBtn = document.createElement('a');
             downloadBtn.href = dataUrl;
-            downloadBtn.download = "result.png";
+            downloadBtn.download = "generated_image.png";
             downloadBtn.className = "download-btn";
             downloadBtn.textContent = "Download Image";
-            
-            // Add to container
+
             resultContainer.innerHTML = '';
             resultContainer.appendChild(img);
             resultContainer.appendChild(document.createElement('br'));
