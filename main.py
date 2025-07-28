@@ -338,6 +338,18 @@ async def ltxv(data: LTXVRequest):
     # Return the result directly
     return result
 
+class UpscaleRequest(BaseModel):
+    image1: str              # Base64로 인코딩된 이미지 데이터
+
+@app.post("/flux-ultimate-upscale/")
+async def flux_ultimate_upscale(data: UpscaleRequest):
+    # Load images into memory
+    result_image = comfyuiservice.get_flux_upscale(image_base64=data.image1)
+    result_image = "data:image/png;base64," + base64.b64encode(result_image).decode("utf-8")
+    result = {"image": result_image}
+    return result
+
+
 # 요청 모델 정의
 class FaceInpainting(BaseModel):
     image: str                  # Base64로 인코딩된 이미지 데이터
