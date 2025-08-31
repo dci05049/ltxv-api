@@ -350,6 +350,20 @@ async def flux_ultimate_upscale(data: UpscaleRequest):
     return result
 
 
+class QwenImageEditRequest(BaseModel):
+    image1: str              # Base64로 인코딩된 이미지 데이터
+    prompt: str
+    
+@app.post("/qwen-image-edit/")
+async def qwen_image_edit(data: QwenImageEditRequest):
+    # Load images into memory
+    result_image = comfyuiservice.get_qwen_image_edit(image_base64=data.image1, prompt=data.prompt)
+    result_image = "data:image/png;base64," + base64.b64encode(result_image).decode("utf-8")
+    result = {"image": result_image}
+    return result
+
+
+
 # 요청 모델 정의
 class FaceInpainting(BaseModel):
     image: str                  # Base64로 인코딩된 이미지 데이터

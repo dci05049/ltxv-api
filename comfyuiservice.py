@@ -265,6 +265,24 @@ def flux_ultimate_sd_upscale_json(image_base_64):
         prompt_json = json.load(file)
         prompt_json[LOADIMAGEID]["inputs"]["base64_data"] = image_base_64
         return prompt_json
+    
+# qwen image edit
+def qwen_image_edit_json(image_base_64, prompt):
+    PROMPTID = "20"
+    LOADIMAGEID = "45"
+
+    file_path = "data.json"
+    workflow_folder = "workflows-api"
+    file_name = "qwen-edit-api.json"
+    # Construct the full path to the JSON file
+    file_path = os.path.join(workflow_folder, file_name)
+    # Open the JSON file and load its content into a variable
+    with open(file_path, "r") as file:
+        prompt_json = json.load(file)
+        prompt_json[LOADIMAGEID]["inputs"]["base64_data"] = image_base_64
+        prompt_json[PROMPTID]["inputs"]["prompt"] = prompt
+        return prompt_json
+
 
 # uses the flux-guff-text-api.json workflow to generate image with prompt
 def get_cloth_with_prompt(prompt):
@@ -830,6 +848,10 @@ def get_ltxv_video(image_base64, prompt):
 # Gets new image to video for LTXV 0.9.6 distilled model
 def get_flux_upscale(image_base64):
     return wrap_websocket_call(flux_ultimate_sd_upscale_json(image_base64))
+
+# Gets new image to video for LTXV 0.9.6 distilled model
+def get_qwen_image_edit(image_base64, prompt):
+    return wrap_websocket_call(qwen_image_edit_json(image_base64, prompt))
 
 def get_multi_photo(prompt):
     result = wrap_websocket_call_array_result(multi_photos_json(
